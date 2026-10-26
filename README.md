@@ -112,7 +112,7 @@ no shut
 ip routing
 ip route 0.0.0.0 0.0.0.0 10.0.0.5
 end
-write
+write memory
 
 ## Criar Vlan e SVI para os Servers
 
@@ -127,8 +127,10 @@ switchport access vlan 10
 int vlan 10
 ip address 172.16.0.1 255.255.255.0
 no shut
+exit
+ip default-gateway 172.16.0.1
 end
-write
+write memory
 
 ## Verificar as configurações
 
@@ -267,13 +269,43 @@ sudo nano /etc/zabbix/zabbix_agentd.conf
 systemctl restart zabbix-agent
 systemctl enable zabbix-agent
 
+Logo após adicionar no zabbix com as informações configuradas acima
 <img width="1919" height="943" alt="image" src="https://github.com/user-attachments/assets/5e9d1a3f-5556-4859-9d6b-175fa4ac3099" />
 
 
+## MikroTik
 
+Para adicionar um dispositivo MikroTik no Zabbix iremos utilizar o protocolo SNMP
 
+No MikroTik vamos ativar o protocolo em IP > SNMP
 
+<img width="1198" height="670" alt="image" src="https://github.com/user-attachments/assets/061111bc-b3f9-4294-94fb-f7f750a83186" />
 
+Logo após vamos adiciona-lo a comunidade clicando em communities > New, e colocar as seguintes informações
 
+<img width="521" height="411" alt="image" src="https://github.com/user-attachments/assets/2e72cd41-90bf-4c32-a66c-19b410fe4f89" />
 
+No Zabbix iremos utilizar as seguintes informações
 
+<img width="1917" height="942" alt="image" src="https://github.com/user-attachments/assets/1e98b82e-70a7-4d2a-bfaf-24fa93ffed38" />
+
+## Cisco
+
+Para adicionar um dispositivo Cisco no Zabbix iremos utilizar o protocolo SNMP
+
+No Cisco vamos usar o seguinte comando para ativar e configurar o SNMP
+
+enable
+configure terminal
+snmp-server community Cisco RO
+snmp-server host 172.16.0.100 version 2c Cisco
+end
+write memory
+
+No Zabbix iremos utilizar as seguintes informações
+
+<img width="1916" height="943" alt="image" src="https://github.com/user-attachments/assets/33c2df81-34d7-4316-836e-1b169a9d6830" />
+
+# Resultado Esperado
+
+<img width="1918" height="942" alt="image" src="https://github.com/user-attachments/assets/86d46663-d313-4d10-bf2f-fd0499204aef" />
