@@ -213,6 +213,49 @@ systemctl restart network
 ip a
 <img width="1118" height="458" alt="image" src="https://github.com/user-attachments/assets/0f1d9827-5a7d-4aa2-b001-a6b3f9ec7081" />
 
+# Adicionar rota do computador para o LAB Zabbix
+
+## Para acessar o zabbix do seu proprio computador é necessario criar uma rota no VMWare, para isso será necessario usar o ip recebido na interface ether 1 do dispositivo MikroTik R1, no caso desse lab será o IP 192.168.14.135
+
+ip route add 172.16.0.0/24 via 192.168.14.135
+ip route
+
+<img width="974" height="137" alt="image" src="https://github.com/user-attachments/assets/c690bb24-8867-4679-a444-85efca9e695e" />
+
+## Teste de conectividade
+
+ping -c 4 172.16.0.100
+<img width="879" height="268" alt="image" src="https://github.com/user-attachments/assets/77e95074-78e2-460f-8562-d0c88284d308" />
+
+# Acessando Zabbix
+
+## No navegador do seu computador digite o endereço 172.16.0.100, aparecerá a tela de login do Zabbix
+Username: Admin
+Password: zabbix
+
+# Adicionando Hosts ao Zabbix
+
+## Windows
+
+Para adicionar um dispositivo Windows ao Zabbix iremos utilizar o Zabbix Agent, baixando o pelo link: https://www.zabbix.com/download_agents
+
+<img width="1014" height="717" alt="image" src="https://github.com/user-attachments/assets/07cdef2f-7ac7-4c8c-984e-6c293696c010" />
+
+No Zabbix vamos em Data collection > Hosts
+
+<img width="1918" height="944" alt="image" src="https://github.com/user-attachments/assets/ff209121-2a24-4a11-86bb-be4122827f43" />
+
+Clique em Create Host no canto superior direito e irá colocar as seguintes informações sendo o IP do Agent de acordo com o ip do windows
+<img width="1917" height="943" alt="image" src="https://github.com/user-attachments/assets/1b17ecf9-f464-485f-979d-61229da84eb5" />
+
+
+
+
+
+
+
+
+
 
 
 
