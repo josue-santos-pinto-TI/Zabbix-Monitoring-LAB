@@ -142,16 +142,76 @@ sh ip route
 <img width="1120" height="296" alt="image" src="https://github.com/user-attachments/assets/65b54276-eeca-4f4b-b869-9624516f5556" />
 
 
+# Definindo IP Estático para Servidor Linux
 
+## Descobrir o nome da interface de rede
 
+ip a
 
+<img width="1034" height="225" alt="image" src="https://github.com/user-attachments/assets/1772e7ef-8dd1-4b12-b198-c7207a09cbd5" />
 
+## Configurar o arquivo de internet
 
+sudo nano /etc/netplan/50-cloud-init.yaml
 
+network:
+  version: 2
+  ethernets:
+    ens3:
+      dhcp4: false
+      addresses:
+        - 172.16.0.101/24
+      routes:
+        - to: default
+          via: 172.16.0.1
+      nameservers:
+        addresses:
+          - 8.8.8.8
+          - 1.1.1.1
+          
+Control O > Enter > Control X para salvar e sair
 
+## Testar e Confirmar a configuração 
 
+sudo netplan generate
+sudo netplan try
+ip a
 
+<img width="847" height="226" alt="image" src="https://github.com/user-attachments/assets/2819886e-4ad4-499a-89b5-b93eb2f5a1b5" />
 
+# Definir IP Estático no Zabbix
+
+## Descobrir nome da interface
+
+ip a
+<img width="1117" height="402" alt="image" src="https://github.com/user-attachments/assets/38a9e951-6b37-4180-99d7-3bc14af29674" />
+
+## Alterar arquivo de configuração de rede
+
+vi /etc/sysconfig/network-scripts/ifcfg-eth0
+
+Pressione i para editar e coloque a seguinte configuração
+
+TYPE=Ethernet
+DEVICE=eth0
+NAME=eth0
+BOOTPROTO=none
+ONBOOT=yes
+IPADDR=172.16.0.100
+PREFIX=24
+GATEWAY=172.16.0.1
+DNS1=8.8.8.8
+
+esc > :wq = para salvar e sair
+
+## Aplicar as configurações
+
+systemctl restart network
+
+## Testar
+
+ip a
+<img width="1118" height="458" alt="image" src="https://github.com/user-attachments/assets/0f1d9827-5a7d-4aa2-b001-a6b3f9ec7081" />
 
 
 
