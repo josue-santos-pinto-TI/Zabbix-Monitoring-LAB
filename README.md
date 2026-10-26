@@ -248,18 +248,26 @@ No Zabbix vamos em Data collection > Hosts
 Clique em Create Host no canto superior direito e irá colocar as seguintes informações sendo o IP do Agent de acordo com o ip do windows
 <img width="1917" height="943" alt="image" src="https://github.com/user-attachments/assets/1b17ecf9-f464-485f-979d-61229da84eb5" />
 
+## Linux 
+
+Para adicionar um dispositivo Linux ao Zabbix iremos utilizar o Zabbix Agent, seguindo a documentação do zabbix: [https://www.zabbix.com/download_agents](https://www.zabbix.com/download?zabbix=7.4&os_distribution=ubuntu&os_version=26.04&components=agent&db=&ws=)
+
+sudo -s
+wget https://repo.zabbix.com/zabbix/7.4/release/ubuntu/pool/main/z/zabbix-release/zabbix-release_latest_7.4+ubuntu26.04_all.deb
+dpkg -i zabbix-release_latest_7.4+ubuntu26.04_all.deb
+apt update
+apt install zabbix-agent
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
 
 
+Configurar conexão com o Servidor
 
+sudo nano /etc/zabbix/zabbix_agentd.conf
+systemctl restart zabbix-agent
+systemctl enable zabbix-agent
 
-
-
-
-
-
-
-
-
+<img width="1919" height="943" alt="image" src="https://github.com/user-attachments/assets/5e9d1a3f-5556-4859-9d6b-175fa4ac3099" />
 
 
 
