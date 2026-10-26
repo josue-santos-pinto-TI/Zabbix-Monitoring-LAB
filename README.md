@@ -1,7 +1,7 @@
 # Zabbix-Monitoring-LAB
 Projeto para monitoramento de redes em um ambiente com dispositivos Linux, Windows, Mikrotik e Cisco
 
-## Para esse projeto será necessario ter instalado uma máquina virtual, com o EVE-NG instalado
+## Para esse projeto será necessario ter instalado uma máquina virtual, com o EVE-NG instalado e Winbox 4 baixado
 
 # Overview
 <img width="987" height="775" alt="image" src="https://github.com/user-attachments/assets/de6338d7-ec7c-4acf-a17c-a6495fce131a" />
@@ -34,17 +34,120 @@ Para a rede LAN, onde ficará os computadores dos funcionários, utilizei o rang
 
 <img width="1197" height="669" alt="image" src="https://github.com/user-attachments/assets/fa8eb6f4-0f7c-4595-983c-05500148dd8f" />
 
-## 4- Criar novo Super Usuário ( System > Users > New )
+## 4- DNS Servers ( IP > DNS )
+
+<img width="1198" height="672" alt="image" src="https://github.com/user-attachments/assets/75a7db4a-961f-49df-83a4-fb7f4a7d0762" />
+
+## 5- Criar novo Super Usuário ( System > Users > New )
 
 <img width="1194" height="697" alt="image" src="https://github.com/user-attachments/assets/b60db8b9-ec39-410d-a345-b8857a7422c2" />
 
-## 5- Após relogar no usuário criado, apagar o usuário admin padrão ( System > Users > Selecionar admin > Remove )
+## 6- Após relogar no usuário criado, apagar o usuário admin padrão ( System > Users > Selecionar admin > Remove )
 
 <img width="745" height="454" alt="image" src="https://github.com/user-attachments/assets/1c4515f4-71ab-44ee-b8fe-37e3680174c3" />
 
-## 6- Ativar RoMON ( Tools > RoMON )
+## 7- Ativar RoMON ( Tools > RoMON )
 
 <img width="1198" height="668" alt="image" src="https://github.com/user-attachments/assets/f81df374-a4f1-4e49-9d6d-8f96c23d547a" />
+
+## 8- Logar com conta MikroTik para aumento de banda ( System > License > Renew License )
+
+<img width="438" height="226" alt="image" src="https://github.com/user-attachments/assets/2eeea699-96d6-45a6-8bfc-8b244ff3bb94" />
+
+
+# Configurações R1
+
+## Adicionar IP PTP a ether2 e ether3 ( IP > Addresses > New )
+
+<img width="408" height="458" alt="image" src="https://github.com/user-attachments/assets/d84dcf21-30a4-44a9-89d5-5ac649fede5f" />
+
+## Criar NAT masquerade com | chain srcnat / out interface ether1 / Action masquerade
+
+<img width="694" height="642" alt="image" src="https://github.com/user-attachments/assets/87a9ff4b-0365-4b5c-b649-84322e9a6c66" />
+
+<img width="693" height="248" alt="image" src="https://github.com/user-attachments/assets/b95ee6ce-fc16-4dc2-bb0a-7932158383e8" />
+
+## Criar rotas para Rede LAN e SERVERS ( IP > Routes > New )
+
+<img width="1194" height="699" alt="image" src="https://github.com/user-attachments/assets/42c17b2c-fddc-4722-85ef-04481078709b" />
+
+<img width="811" height="455" alt="image" src="https://github.com/user-attachments/assets/177812bd-5d28-4c1f-aa1c-4c5b4bcc1872" />
+
+
+# Configurações MK-LAN
+
+## Criar Bridge LAN e adicionar portas a ela ( Bridge > New | Ports > New )
+
+<img width="1047" height="643" alt="image" src="https://github.com/user-attachments/assets/08a71b5c-b662-4d9c-af16-fa955e2fe201" />
+<img width="1047" height="223" alt="image" src="https://github.com/user-attachments/assets/9092305d-db22-41f9-8420-6ef8cf59a0ed" />
+
+## Criar PTP para R1 ( IP > Addresses > New )
+
+<img width="408" height="457" alt="image" src="https://github.com/user-attachments/assets/04d6cc8a-89c9-4bec-8db1-1eed7b3bfc19" />
+
+## Criar rede LAN ( IP > Addresses > New )
+ 
+<img width="405" height="454" alt="image" src="https://github.com/user-attachments/assets/e124ae43-ab45-4ae7-9344-2c1781d219c0" />
+
+## Criar DHCP Server para a Bridge LAN ( IP > DHCP Server > DHCP Setup )
+
+<img width="786" height="455" alt="image" src="https://github.com/user-attachments/assets/ed2800ab-7ad1-49ff-87be-0309a86fb09d" />
+
+## Rota DEFAULT ( IP > Routes > New )
+
+<img width="625" height="612" alt="image" src="https://github.com/user-attachments/assets/a03428ad-83c9-49e8-831d-bdd31bce7491" />
+
+
+# Configurações Switch CISCO ( SW1 )
+
+## Criar IP PTP e Rota para R1
+
+enable
+configure terminal
+hostname SW1
+int e0/0
+no switchport
+ip address 10.0.0.6 255.255.255.252
+no shut
+ip routing
+ip route 0.0.0.0 0.0.0.0 10.0.0.5
+end
+write
+
+## Criar Vlan e SVI para os Servers
+
+enable
+configure terminal
+vlan 10
+name SERVERS
+exit
+int range e0/1-2
+switchport mode access
+switchport access vlan 10
+int vlan 10
+ip address 172.16.0.1 255.255.255.0
+no shut
+end
+write
+
+## Verificar as configurações
+
+ping 8.8.8.8
+ping 192.168.0.1
+show ip int brief
+sh vlan brief
+sh ip route
+
+<img width="1117" height="567" alt="image" src="https://github.com/user-attachments/assets/e6d0985d-77d4-4af3-a8ed-79129d6408a5" />
+<img width="1120" height="296" alt="image" src="https://github.com/user-attachments/assets/65b54276-eeca-4f4b-b869-9624516f5556" />
+
+
+
+
+
+
+
+
 
 
 
