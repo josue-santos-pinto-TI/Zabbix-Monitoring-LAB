@@ -309,3 +309,93 @@ No Zabbix iremos utilizar as seguintes informações
 # Resultado Esperado
 
 <img width="1918" height="942" alt="image" src="https://github.com/user-attachments/assets/86d46663-d313-4d10-bf2f-fd0499204aef" />
+
+
+# Instalando e configurando Grafana no servidor Zabbix
+
+## Abertura de Portas
+
+Para utilizar o grafana precisamos abrir a porta 3000 e para isso iremos utilizar o pacote firewalld
+
+## Instalação e inicialização do FirewallD
+
+sudo dnf install firewalld -y
+sudo systemctl start firewalld
+sudo systemctl status firewalld
+
+## Abrindo as portas 3000, 80, 10050 e 10051 e serviços http e https
+
+sudo firewall-cmd --permanent --add-service=http
+sudo firewall-cmd --permanent --add-service=https
+sudo firewall-cmd --permanent --add-port=3000/tcp
+sudo firewall-cmd --permanent --add-port=10050/tcp
+sudo firewall-cmd --permanent --add-port=10051/tcp
+sudo firewall-cmd --permanent --add-port=80/tcp
+sudo firewall-cmd --reload
+
+## Verificar Portas e serviços liberados
+
+sudo firewall-cmd --list-ports
+sudo firewall-cmd --list-services
+
+
+## Instalando Pacote Grafana
+
+Para baixar e instalar o pacote vamos seguir a documentação do grafana [https://www.grafana.com/docs](https://grafana.com/docs/grafana/latest/setup-grafana/installation/redhat-rhel-fedora/) 
+
+Importar GPG key
+
+sudo dnf install wget -y
+wget -q -O gpg.key https://rpm.grafana.com/gpg.key
+sudo rpm --import gpg.key
+
+Criar e editar documento de configuração ( utilizar a tecla i para iniciar edição e esc > :wq para salvar e sair )
+
+vi /etc/yum.repos.d/grafana.repo
+
+[grafana]
+name=grafana
+baseurl=https://rpm.grafana.com
+repo_gpgcheck=1
+enabled=1
+gpgcheck=1
+gpgkey=https://rpm.grafana.com/gpg.key
+sslverify=1
+
+Instalar e iniciar o grafana
+
+sudo dnf install grafana
+sudo systemctl start grafana-server
+sudo systemctl status grafana-server
+
+## Acessar grafana pelo seu navegador no ip 172.16.0.100:3000
+
+Username: admin
+Password: admin
+
+# Configurando o Grafana
+
+## 1- Adicionar nova conexão ( Administration > Plugins and data > Plugins > zabbix > Install > Enable)
+
+<img width="1903" height="944" alt="image" src="https://github.com/user-attachments/assets/8837c2fa-14e1-42e7-81a0-11b784d270fe" />
+
+## 2- Adicionar Fonte de Dados ( Connections > Data sources > Add data source > Zabbix) 
+
+<img width="1919" height="942" alt="image" src="https://github.com/user-attachments/assets/63adffc7-5b71-437d-9b11-35f6d44f05b3" />
+
+## 3- Configurar Fonte de Dados
+
+URL: http://172.16.0.100/api_jsonrpc.php
+Authentication method: Forward OAuth Identity
+Zabbix Connection:
+Username: Admin
+Password: zabbix
+
+Save & Test
+
+<img width="1902" height="940" alt="image" src="https://github.com/user-attachments/assets/0a376cf4-81a9-41a8-8533-fa062624a0b0" />
+
+# Adicionando Paineis ( Dashboard > New Dashboard > Edit Panel )
+
+<img width="1917" height="943" alt="image" src="https://github.com/user-attachments/assets/1bfef324-ca9e-4db7-b31c-a4ef3cc3e395" />
+
